@@ -4,6 +4,7 @@ import hashlib
 import re
 from random import Random
 import requests
+from xml.etree import ElementTree
 
 
 def smart_str(s, encoding='utf-8', strings_only=False, errors='strict'):
@@ -59,6 +60,12 @@ def dict_to_xml(params, sign):
 
 
 def xml_to_dict(xml):
+    result = {child.tag: child.text
+             for child in ElementTree.fromstring(xml)}
+    sign = result.pop('sign')
+    return sign, result
+
+def xml_to_dict_(xml):
     if xml[0:5].upper() != "<XML>" and xml[-6].upper() != "</XML>":
         return None, None
 
